@@ -1,4 +1,5 @@
 // import { Chart } from "chart.js";
+import { saveAs } from "file-saver";
 const csvForm = document.getElementById("csvForm");
 const csvFileInput = document.getElementById("csvFile");
 const drawChartButton = document.getElementById("draw");
@@ -62,9 +63,9 @@ const convertCsv = (csvData) => {
   const rows = csvData.split("\n");
   for (let row of rows) {
     const [label, xValue, yValue] = row.trim().split(/\s+/g);
-    labelValuesArr.push(parseFloat(swapCommaToDot(label)).toFixed(3));
-    xValuesArr.push(parseFloat(swapCommaToDot(xValue)).toFixed(3));
-    yValuesArr.push(parseFloat(swapCommaToDot(yValue)).toFixed(3));
+    labelValuesArr.push(parseFloat(swapCommaToDot(label)));
+    xValuesArr.push(parseFloat(swapCommaToDot(xValue)));
+    yValuesArr.push(parseFloat(swapCommaToDot(yValue)));
   }
   // Remove shit show from first row
   labelValuesArr.shift();
@@ -84,7 +85,7 @@ const createChart = (canvas, labels, data) => {
   new Chart(ctx, {
     type: "line",
     data: {
-      labels: labels,
+      labels: labels.map((value) => value.toFixed(3)),
       datasets: [
         {
           label: "X",
@@ -100,6 +101,14 @@ const createChart = (canvas, labels, data) => {
         y: {
           beginAtZero: true,
         },
+        // x: {
+        //   ticks: {
+        //     callback: function (value) {
+        //       console.log(value);
+        //       return value.toFixed(3);
+        //     },
+        //   },
+        // },
       },
       // Optimization of chart drawing
       normalized: true,
@@ -119,3 +128,17 @@ const createChart = (canvas, labels, data) => {
     },
   });
 };
+
+const saveToFile = () => {
+  let data = "T[s],Ux[V],Uy[V]\n";
+  for (let i = 0; i < labelArr.length; i++) {
+    console.log(i);
+    data += `${labelArr[i]},${xArr[i]},${yArr[i]}\n`;
+  }
+  const blob = new Blob([data], {
+    type: "text/csv;charset=utf-8",
+  });
+  saveAs(blob, "dane.csv");
+};
+
+document.getElementById("save").addEventListener("click", saveToFile);
