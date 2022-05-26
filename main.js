@@ -130,10 +130,10 @@ const createChart = (canvas, labels, data) => {
 };
 
 const saveToFile = () => {
-  let data = "T[s],Ux[V],Uy[V]\n";
+  let data = "T[s]  Ux[V] Uy[V]\n";
   for (let i = 0; i < labelArr.length; i++) {
     console.log(i);
-    data += `${labelArr[i]},${xArr[i]},${yArr[i]}\n`;
+    data += `${labelArr[i]} ${xArr[i]}  ${yArr[i]}\n`;
   }
   const blob = new Blob([data], {
     type: "text/csv;charset=utf-8",
